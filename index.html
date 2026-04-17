@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Meshaal Alharbi - Portfolio</title>
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <nav>
+    <h1>Meshaal Alharbi</h1>
+    <ul>
+      <li><a href="#about">About</a></li>
+      <li><a href="#projects">Projects</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><button id="themeToggle">Dark Mode</button></li>
+    </ul>
+  </nav>
+
+  <section id="about">
+    <h2>About Me</h2>
+    <p id="greeting"></p>
+    <p>
+      I'm Meshaal Alharbi, a junior Software Engineering student passionate about web development.
+      I enjoy building clean, responsive websites and improving my coding skills through projects.
+      My goal is to grow as a developer and create useful digital solutions.
+    </p>
+  </section>
+
+  <section id="projects">
+    <h2>Projects</h2>
+
+    <div class="projects-tools">
+      <input type="text" id="projectSearch" placeholder="Search projects">
+
+      <div class="filter-buttons">
+        <button class="filter-btn active" data-category="all">All</button>
+        <button class="filter-btn" data-category="web">Web</button>
+        <button class="filter-btn" data-category="java">Java</button>
+      </div>
+
+      <p id="projectCount"></p>
+      <p id="noResultsMessage"></p>
+    </div>
+
+    <div class="projects-grid">
+      <div class="project-card" data-category="web">
+        <img src="assets/images/project1.png" alt="KFUPM real-time map">
+        <h3>KFUPM Real-Time Map</h3>
+        <p class="short-text">A KFUPM campus map based on students schedule.</p>
+        <div class="project-details hidden">
+          <p>This project helps students view routes between classes for each day based on their schedule. It focuses on usability and clear route display.</p>
+        </div>
+        <button class="details-btn">Show Details</button>
+      </div>
+
+      <div class="project-card" data-category="java">
+        <img src="assets/images/project2.png" alt="Food Ordering Application">
+        <h3>Ordering Application</h3>
+        <p class="short-text">A simple food ordering app implemented using JavaFX.</p>
+        <div class="project-details hidden">
+          <p>This project was designed to support the online ordering process with a simple interface. It helped me practice Java programming and UI design.</p>
+        </div>
+        <button class="details-btn">Show Details</button>
+      </div>
+    </div>
+  </section>
+
+  <section id="contact">
+    <h2>Contact</h2>
+    <form id="contactForm">
+      <input name="name" type="text" placeholder="Full Name" required>
+      <input name="email" type="email" placeholder="Email" required>
+      <textarea name="message" placeholder="Type a message" required></textarea>
+      <button type="submit">Send</button>
+    </form>
+    <p id="formMessage"></p>
+  </section>
+
+  <script src="js/script.js"></script>
+</body>
+</html>
