@@ -28,18 +28,19 @@ The website presents my portfolio in a more dynamic and interactive way. It incl
 - Git and GitHub
 
 ## Folder Structure
+
 assignment-3/
 ├── README.md
 ├── index.html
 ├── css/
-│   └── styles.css
+│ └── styles.css
 ├── js/
-│   └── script.js
+│ └── script.js
 ├── assets/
-│   └── images/
+│ └── images/
 ├── docs/
-│   ├── ai-usage-report.md
-│   └── technical-documentation.md
+│ ├── ai-usage-report.md
+│ └── technical-documentation.md
 └── .gitignore
 
 ## How to Run Locally
