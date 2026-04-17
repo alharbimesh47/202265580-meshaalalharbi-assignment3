@@ -29,21 +29,19 @@ The website presents my portfolio in a more dynamic and interactive way. It incl
 
 ## Folder Structure
 
-assignment-3/
+id-name-assignment3/
 ├── README.md
 ├── index.html
 ├── css/
-│ └── styles.css
+│   └── styles.css
 ├── js/
-│ └── script.js
+│   └── script.js
 ├── assets/
-│ └── images/
+│   └── images/
 ├── docs/
-│ ├── ai-usage-report.md
-│ └── technical-documentation.md
+│   ├── ai-usage-report.md
+│   └── technical-documentation.md
 └── .gitignore
-
-
 
 ## How to Run Locally
 1. Download or clone the repository.
