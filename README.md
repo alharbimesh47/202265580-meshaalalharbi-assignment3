@@ -29,7 +29,8 @@ The website presents my portfolio in a more dynamic and interactive way. It incl
 
 ## Folder Structure
 
-id-name-assignment3/
+```
+assignment-3/
 ├── README.md
 ├── index.html
 ├── css/
@@ -42,6 +43,8 @@ id-name-assignment3/
 │   ├── ai-usage-report.md
 │   └── technical-documentation.md
 └── .gitignore
+```
+
 
 ## How to Run Locally
 1. Download or clone the repository.
