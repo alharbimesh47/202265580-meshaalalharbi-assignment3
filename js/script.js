@@ -1,111 +1,336 @@
 document.addEventListener('DOMContentLoaded', function () {
   const greetingEl = document.getElementById('greeting');
-  const currentHour = new Date().getHours();
+  const hour = new Date().getHours();
 
-  if (currentHour < 12) {
-    greetingEl.textContent = 'Good Morning!';
-  } else if (currentHour < 18) {
-    greetingEl.textContent = 'Good Afternoon!';
+  if (hour < 12) {
+    greetingEl.textContent = '🌤 Good Morning';
+  } else if (hour < 18) {
+    greetingEl.textContent = '☀️ Good Afternoon';
   } else {
-    greetingEl.textContent = 'Good Evening!';
+    greetingEl.textContent = '🌙 Good Evening';
   }
 
   const themeBtn = document.getElementById('themeToggle');
-  const savedTheme = localStorage.getItem('theme');
+  const themeIcon = themeBtn.querySelector('.theme-icon');
 
-  if (savedTheme === 'dark') {
-    document.body.classList.add('dark-theme');
-    themeBtn.textContent = 'Light Mode';
-  } else {
-    themeBtn.textContent = 'Dark Mode';
+  function applyTheme(isDark) {
+    document.body.classList.toggle('light', !isDark);
+    themeIcon.textContent = isDark ? '☀' : '🌙';
   }
 
+  const savedTheme = localStorage.getItem('theme');
+  const prefersDark = savedTheme ? savedTheme === 'dark' : !window.matchMedia('(prefers-color-scheme: light)').matches;
+  applyTheme(prefersDark);
+
   themeBtn.addEventListener('click', function () {
-    document.body.classList.toggle('dark-theme');
-    const isDark = document.body.classList.contains('dark-theme');
-    localStorage.setItem('theme', isDark ? 'dark' : 'light');
-    themeBtn.textContent = isDark ? 'Light Mode' : 'Dark Mode';
+    const isCurrentlyDark = !document.body.classList.contains('light');
+    applyTheme(!isCurrentlyDark);
+    localStorage.setItem('theme', !isCurrentlyDark ? 'dark' : 'light');
   });
 
-  const form = document.getElementById('contactForm');
-  const formMessage = document.getElementById('formMessage');
+  const hamburger = document.getElementById('hamburger');
+  const mobileNav = document.getElementById('mobileNav');
+  const mobileLinks = document.querySelectorAll('.mobile-link');
 
-  form.addEventListener('submit', function (e) {
-    e.preventDefault();
-    formMessage.textContent = 'Your message has been sent successfully.';
-    form.reset();
-
-    setTimeout(function () {
-      formMessage.textContent = '';
-    }, 3000);
+  hamburger.addEventListener('click', function () {
+    mobileNav.classList.toggle('open');
   });
+
+  mobileLinks.forEach(function (link) {
+    link.addEventListener('click', function () {
+      mobileNav.classList.remove('open');
+    });
+  });
+
+  const visitorInput = document.getElementById('visitorName');
+  const saveNameBtn = document.getElementById('saveNameBtn');
+  const clearNameBtn = document.getElementById('clearNameBtn');
+  const welcomeMessage = document.getElementById('welcomeMessage');
+
+  function refreshWelcome() {
+    const name = localStorage.getItem('visitorName');
+    welcomeMessage.textContent = name ? 'Welcome back, ' + name + '! 👋' : '';
+  }
+
+  saveNameBtn.addEventListener('click', function () {
+    const name = visitorInput.value.trim();
+    if (name) {
+      localStorage.setItem('visitorName', name);
+      refreshWelcome();
+      visitorInput.value = '';
+    }
+  });
+
+  visitorInput.addEventListener('keydown', function (e) {
+    if (e.key === 'Enter') {
+      saveNameBtn.click();
+    }
+  });
+
+  clearNameBtn.addEventListener('click', function () {
+    localStorage.removeItem('visitorName');
+    refreshWelcome();
+  });
+
+  refreshWelcome();
+
+  const timeBadge = document.getElementById('timeOnSite');
+  let seconds = 0;
+
+  setInterval(function () {
+    seconds++;
+    if (seconds < 60) {
+      timeBadge.textContent = '⏱ ' + seconds + 's on site';
+    } else {
+      const m = Math.floor(seconds / 60);
+      const s = seconds % 60;
+      timeBadge.textContent = '⏱ ' + m + 'm ' + s + 's on site';
+    }
+  }, 1000);
 
   const searchInput = document.getElementById('projectSearch');
-  const projectCards = document.querySelectorAll('.project-card');
-  const noResultsMessage = document.getElementById('noResultsMessage');
+  const sortSelect = document.getElementById('sortProjects');
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectsGrid = document.getElementById('projectsGrid');
   const projectCount = document.getElementById('projectCount');
-  const filterButtons = document.querySelectorAll('.filter-btn');
+  const noResultsMsg = document.getElementById('noResultsMessage');
+  const allCards = Array.from(document.querySelectorAll('.project-card'));
 
-  let currentCategory = 'all';
+  let activeCategory = localStorage.getItem('projectCategory') || 'all';
+  const savedSort = localStorage.getItem('projectSort') || 'default';
+  const savedSearch = localStorage.getItem('projectSearch') || '';
 
-  function updateProjects() {
-    const searchValue = searchInput.value.toLowerCase().trim();
-    let visibleCount = 0;
+  searchInput.value = savedSearch;
+  sortSelect.value = savedSort;
 
-    projectCards.forEach(function (card) {
-      const text = card.textContent.toLowerCase();
-      const category = card.getAttribute('data-category');
+  filterBtns.forEach(function (btn) {
+    btn.classList.toggle('active', btn.dataset.category === activeCategory);
+  });
 
-      const matchesSearch = text.includes(searchValue);
-      const matchesCategory = currentCategory === 'all' || category === currentCategory;
+  function renderProjects() {
+    const query = searchInput.value.toLowerCase().trim();
+    const sortBy = sortSelect.value;
+    let cards = [...allCards];
 
-      if (matchesSearch && matchesCategory) {
-        card.style.display = 'block';
-        visibleCount++;
-      } else {
-        card.style.display = 'none';
-      }
+    cards = cards.filter(function (card) {
+      return activeCategory === 'all' || card.dataset.category === activeCategory;
     });
 
-    projectCount.textContent = 'Showing ' + visibleCount + ' project(s)';
+    if (query) {
+      cards = cards.filter(function (card) {
+        return card.textContent.toLowerCase().includes(query);
+      });
+    }
 
-    if (visibleCount === 0) {
-      noResultsMessage.textContent = 'No projects found.';
+    if (sortBy === 'az') {
+      cards.sort(function (a, b) {
+        return a.querySelector('h3').textContent.localeCompare(b.querySelector('h3').textContent);
+      });
+    } else if (sortBy === 'za') {
+      cards.sort(function (a, b) {
+        return b.querySelector('h3').textContent.localeCompare(a.querySelector('h3').textContent);
+      });
+    }
+
+    projectsGrid.innerHTML = '';
+    cards.forEach(function (card) {
+      projectsGrid.appendChild(card);
+    });
+
+    projectCount.textContent = 'Showing ' + cards.length + ' project' + (cards.length !== 1 ? 's' : '');
+    noResultsMsg.textContent = cards.length === 0 ? 'No projects match your search.' : '';
+
+    localStorage.setItem('projectCategory', activeCategory);
+    localStorage.setItem('projectSort', sortBy);
+    localStorage.setItem('projectSearch', searchInput.value);
+  }
+
+  searchInput.addEventListener('input', renderProjects);
+  sortSelect.addEventListener('change', renderProjects);
+
+  filterBtns.forEach(function (btn) {
+    btn.addEventListener('click', function () {
+      filterBtns.forEach(function (b) {
+        b.classList.remove('active');
+      });
+      btn.classList.add('active');
+      activeCategory = btn.dataset.category;
+      renderProjects();
+    });
+  });
+
+  renderProjects();
+
+  projectsGrid.addEventListener('click', function (e) {
+    const btn = e.target.closest('.details-btn');
+    if (!btn) return;
+
+    const card = btn.closest('.project-card');
+    const details = card.querySelector('.project-details');
+
+    details.classList.toggle('hidden');
+    btn.textContent = details.classList.contains('hidden') ? 'View Details' : 'Hide Details';
+  });
+
+  const loadReposBtn = document.getElementById('loadReposBtn');
+  const repoList = document.getElementById('repoList');
+  const apiMessage = document.getElementById('apiMessage');
+
+  function setRepoButtonState(state) {
+    loadReposBtn.classList.remove('loading', 'loaded');
+    loadReposBtn.disabled = false;
+
+    if (state === 'loading') {
+      loadReposBtn.classList.add('loading');
+      loadReposBtn.textContent = 'Loading...';
+      loadReposBtn.disabled = true;
+    } else if (state === 'loaded') {
+      loadReposBtn.classList.add('loaded');
+      loadReposBtn.textContent = 'Loaded ✓';
+      loadReposBtn.disabled = true;
     } else {
-      noResultsMessage.textContent = '';
+      loadReposBtn.textContent = 'Load Repositories';
     }
   }
 
-  searchInput.addEventListener('input', updateProjects);
+  loadReposBtn.addEventListener('click', function () {
+    if (loadReposBtn.disabled) return;
 
-  filterButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-      filterButtons.forEach(function (btn) {
-        btn.classList.remove('active');
+    setRepoButtonState('loading');
+    apiMessage.textContent = '';
+    repoList.innerHTML = '';
+
+    fetch('https://api.github.com/users/alharbimesh47/repos?sort=updated&per_page=6')
+      .then(function (res) {
+        if (!res.ok) throw new Error('HTTP ' + res.status);
+        return res.json();
+      })
+      .then(function (repos) {
+        setRepoButtonState('loaded');
+
+        if (repos.length === 0) {
+          apiMessage.textContent = 'No public repositories found.';
+          return;
+        }
+
+        repos.forEach(function (repo) {
+          const card = document.createElement('div');
+          card.className = 'repo-card';
+
+          const langHtml = repo.language
+            ? '<span class="repo-lang">' + repo.language + '</span>'
+            : '';
+
+          const starsHtml = repo.stargazers_count > 0
+            ? '<p>⭐ ' + repo.stargazers_count + ' stars</p>'
+            : '';
+
+          card.innerHTML =
+            '<h3>' + escapeHtml(repo.name) + '</h3>' +
+            '<p>' + escapeHtml(repo.description || 'No description available.') + '</p>' +
+            starsHtml +
+            langHtml +
+            '<a href="' + repo.html_url + '" target="_blank" rel="noopener">View Repository →</a>';
+
+          repoList.appendChild(card);
+        });
+      })
+      .catch(function () {
+        setRepoButtonState('default');
+        apiMessage.textContent = '⚠ Unable to load repositories right now. Please try again later.';
       });
-
-      button.classList.add('active');
-      currentCategory = button.getAttribute('data-category');
-      updateProjects();
-    });
   });
 
-  const detailButtons = document.querySelectorAll('.details-btn');
+  function escapeHtml(str) {
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
 
-  detailButtons.forEach(function (button) {
-    button.addEventListener('click', function () {
-      const projectCard = button.parentElement;
-      const details = projectCard.querySelector('.project-details');
+  const form = document.getElementById('contactForm');
+  const nameInput = document.getElementById('nameInput');
+  const emailInput = document.getElementById('emailInput');
+  const messageInput = document.getElementById('messageInput');
+  const nameError = document.getElementById('nameError');
+  const emailError = document.getElementById('emailError');
+  const messageError = document.getElementById('messageError');
+  const formSuccess = document.getElementById('formMessage');
 
-      details.classList.toggle('hidden');
+  function isValidEmail(email) {
+    return /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[A-Za-z]{2,}$/.test(email);
+  }
 
-      if (details.classList.contains('hidden')) {
-        button.textContent = 'Show Details';
-      } else {
-        button.textContent = 'Hide Details';
-      }
-    });
+  nameInput.addEventListener('blur', function () {
+    nameError.textContent = nameInput.value.trim() === '' ? 'Name is required.' : '';
   });
 
-  updateProjects();
+  emailInput.addEventListener('blur', function () {
+    const val = emailInput.value.trim();
+    if (val === '') {
+      emailError.textContent = 'Email is required.';
+    } else if (!isValidEmail(val)) {
+      emailError.textContent = 'Enter a valid email like example@email.com';
+    } else {
+      emailError.textContent = '';
+    }
+  });
+
+  messageInput.addEventListener('blur', function () {
+    const val = messageInput.value.trim();
+    if (val === '') {
+      messageError.textContent = 'Message is required.';
+    } else if (val.length < 10) {
+      messageError.textContent = 'Message must be at least 10 characters.';
+    } else {
+      messageError.textContent = '';
+    }
+  });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+
+    let valid = true;
+
+    nameError.textContent = '';
+    emailError.textContent = '';
+    messageError.textContent = '';
+    formSuccess.textContent = '';
+
+    if (nameInput.value.trim() === '') {
+      nameError.textContent = 'Name is required.';
+      valid = false;
+    }
+
+    const email = emailInput.value.trim();
+
+    if (email === '') {
+      emailError.textContent = 'Email is required.';
+      valid = false;
+    } else if (!isValidEmail(email)) {
+      emailError.textContent = 'Enter a valid email like example@email.com';
+      valid = false;
+    }
+
+    const message = messageInput.value.trim();
+
+    if (message === '') {
+      messageError.textContent = 'Message is required.';
+      valid = false;
+    } else if (message.length < 10) {
+      messageError.textContent = 'Message must be at least 10 characters.';
+      valid = false;
+    }
+
+    if (!valid) return;
+
+    formSuccess.textContent = 'Message sent successfully!';
+    form.reset();
+  });
+
+  const footerYear = document.getElementById('footerYear');
+  if (footerYear) {
+    footerYear.textContent = new Date().getFullYear();
+  }
 });

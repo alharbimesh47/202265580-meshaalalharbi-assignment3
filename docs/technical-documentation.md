@@ -1,41 +1,153 @@
 # Technical Documentation
 
 ## Overview
-This project is a responsive portfolio website built with HTML, CSS, and JavaScript. It includes About, Projects, and Contact sections. Assignment 2 improves Assignment 1 by adding more interactive features and better user feedback.
+This project is a responsive portfolio website built with HTML, CSS, and JavaScript. It extends the earlier assignments by introducing advanced functionality such as API integration, improved state management, stronger validation logic, and a more polished user experience.
 
 ## Technologies Used
-- HTML
-- CSS
+- HTML5
+- CSS3
 - JavaScript
+- GitHub REST API
 
-## Interactive Features
-### Project Search
-A live search input is used to filter project cards while the user types.
+## Website Structure
+The website is divided into the following main sections:
+- Hero section
+- About section
+- Projects section
+- GitHub repositories section
+- Contact section
+- Footer
 
-### Category Filter Buttons
-Buttons allow the user to view all projects or only projects from a selected category.
+## Advanced Features
 
-### Show and Hide Project Details
-Each project card includes a button that lets the user show or hide more information.
+### 1. API Integration
+The website connects to the GitHub API and loads public repositories from my GitHub account. When the user clicks the "Load Repositories" button, the site sends a fetch request to GitHub and displays repository cards dynamically.
 
-### Theme Toggle
-The site includes a dark and light mode button. The selected mode is saved in localStorage so the preference stays after refreshing the page.
+The API feature includes:
+- a load button to start fetching repositories
+- a loading state while the request is being processed
+- a loaded state after repositories are displayed
+- button disabling after a successful load
+- user-friendly feedback if the request fails
+- a message if no repositories are available
 
-### Contact Form Feedback
-When the user submits the form, a success message appears on the page instead of only using an alert.
+### 2. Complex Logic
+The projects section includes multiple features working together:
+- search projects by text
+- filter projects by category
+- sort projects alphabetically
+- show or hide project details
 
-## Error Handling and Feedback
-If no projects match the selected search text or filter, the page shows a “No projects found” message. The contact form also gives clear feedback after submission.
+This combines multiple conditions and steps, which makes the project logic more advanced than a simple click action.
 
-## Responsive Design
-The layout uses CSS Grid for the projects section and media queries for tablet and mobile screens. This helps the site work well across different screen sizes.
+The contact form also uses step-by-step logic:
+- checks if the name field is empty
+- checks if the email field is empty
+- validates the email format using a regular expression
+- checks if the message field is empty
+- checks if the message has at least 10 characters
+- prevents submission until all conditions are satisfied
+- only shows a success message when all inputs are valid
+
+### 3. State Management
+The project uses localStorage to save and restore user-related information and preferences.
+
+Saved state includes:
+- theme mode (dark or light)
+- visitor name
+- selected project category
+- selected project sorting option
+- project search text
+
+This allows the website to remember important settings even after refresh.
+
+### 4. Buttons and User Interaction
+The website includes multiple buttons and controls that support user interaction:
+
+- Theme Toggle Button  
+  Switches between dark mode and light mode and saves the preference using localStorage.
+
+- Mobile Menu Button  
+  Opens and closes the mobile navigation menu on small screens.
+
+- Save Name Button  
+  Saves the visitor name in localStorage and updates the welcome message.
+
+- Clear Name Button  
+  Removes the saved visitor name and clears the welcome message.
+
+- Filter Buttons  
+  Allow users to switch between all projects, web projects, and Java projects.
+
+- Sort Dropdown  
+  Lets users sort project cards alphabetically in ascending or descending order.
+
+- Project Details Button  
+  Each project card has a button that toggles extra details between hidden and visible states.
+
+- Load Repositories Button  
+  Fetches data from the GitHub API, changes to a loading state, and becomes disabled after successful loading.
+
+- Submit Button  
+  Runs form validation and only allows the success message to appear when all fields pass validation.
+
+### 5. Timer
+A time-on-site counter is displayed in the hero section. It updates every second using JavaScript and shows how long the visitor has stayed on the website.
+
+### 6. Mobile Navigation
+For smaller screens, the navigation menu switches to a hamburger button. Clicking it opens or closes the mobile navigation menu.
+
+### 7. Responsive Design
+The layout uses CSS Grid and Flexbox to adapt to different screen sizes. Media queries are used to improve usability on tablets and mobile devices.
 
 ## File Description
-- `index.html`: website structure and content
-- `css/styles.css`: styling, transitions, layout, and dark mode styles
-- `js/script.js`: greeting, theme toggle, project filtering, show and hide details, and form feedback
-- `assets/images/`: project images
-- `docs/`: documentation files
+- `index.html`  
+  Contains the full structure of the portfolio website, including all sections and elements used by the JavaScript features.
+
+- `css/styles.css`  
+  Contains the site styling, color theme system, layout rules, responsive design, transitions, and button states.
+
+- `js/script.js`  
+  Handles all interactive functionality including:
+  - greeting
+  - theme toggle
+  - visitor name saving
+  - timer
+  - search, filter, and sort logic
+  - show/hide project details
+  - GitHub API fetching
+  - contact form validation
+  - mobile navigation
+  - footer year update
+
+## Performance Considerations
+The site is designed to stay lightweight and efficient:
+- no heavy libraries or frameworks are used
+- only necessary files are included
+- images are limited and reused efficiently
+- CSS and JavaScript are organized in separate files
+- API loading is done only when the user clicks the button
 
 ## Testing
-The website was tested by resizing the browser window and checking all interactive features manually. Search, buttons, theme toggle, details toggle, and form submission were tested to confirm that they work correctly.
+The website was tested manually in the browser using desktop and mobile-sized views.
+
+The following features were tested:
+- theme switching and persistence after refresh
+- saving and clearing visitor name
+- timer updating correctly
+- search, filter, and sort in the projects section
+- show/hide project details button
+- loading GitHub repositories
+- API error handling
+- contact form validation
+- mobile navigation behavior
+
+## User Experience
+The website was designed to provide a simple but polished experience:
+- clear section structure
+- smooth scrolling
+- consistent color palette
+- readable typography
+- responsive layout
+- immediate feedback for user actions
+- clean button and card styling
