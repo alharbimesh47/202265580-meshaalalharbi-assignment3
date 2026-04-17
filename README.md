@@ -43,6 +43,7 @@ assignment-3/
 │ └── technical-documentation.md
 └── .gitignore
 
+
 ## How to Run Locally
 1. Download or clone the repository.
 2. Open the project folder in VS Code.
